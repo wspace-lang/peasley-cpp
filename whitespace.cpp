@@ -5,47 +5,45 @@
 #include <map>
 #include <algorithm>
 
-using namespace std;
-
-const string IMP_STACK          = "\x20";
-const string IMP_ARITHMETIC  = "\x9\x20";
-const string IMP_HEAP           = "\x9\x9";
-const string IMP_FLOWC        = "\xA";
-const string IMP_IO              = "\x9\xA";
+const std::string IMP_STACK = "\x20";
+const std::string IMP_ARITHMETIC = "\x9\x20";
+const std::string IMP_HEAP = "\x9\x9";
+const std::string IMP_FLOWC = "\xA";
+const std::string IMP_IO = "\x9\xA";
 
 // Stack manipulation
-const string STACK_PUSH  = "\x20";  // one argument
-const string STACK_DUPLICATE = "\xA\x20";
-const string STACK_COPY  = "\x9\x20";  // one argument
-const string STACK_SWAP = "\xA\x9";
-const string STACK_POP   = "\xA\xA";
-const string STACK_REMOVE = "\x9\xA"; // one argument
+const std::string STACK_PUSH = "\x20"; // one argument
+const std::string STACK_DUPLICATE = "\xA\x20";
+const std::string STACK_COPY = "\x9\x20"; // one argument
+const std::string STACK_SWAP = "\xA\x9";
+const std::string STACK_POP = "\xA\xA";
+const std::string STACK_REMOVE = "\x9\xA"; // one argument
 
 // Arithmetic
-const string ARITHMETIC_ADD = "\x20\x20";
-const string ARITHMETIC_SUB = "\x20\x9";
-const string ARITHMETIC_MULTIPLICATION = "\x20\xA";
-const string ARITHMETIC_DIVISION = "\x9\x20";
-const string ARITHMETIC_MODULO = "\x9\x9";
+const std::string ARITHMETIC_ADD = "\x20\x20";
+const std::string ARITHMETIC_SUB = "\x20\x9";
+const std::string ARITHMETIC_MULTIPLICATION = "\x20\xA";
+const std::string ARITHMETIC_DIVISION = "\x9\x20";
+const std::string ARITHMETIC_MODULO = "\x9\x9";
 
 // Heap access
-const string HEAP_STORE = "\x20";
-const string HEAP_RETRIEVE = "\x9";
+const std::string HEAP_STORE = "\x20";
+const std::string HEAP_RETRIEVE = "\x9";
 
 // Flow control
-const string FLOW_MARK = "\x20\x20";
-const string FLOW_CALL_SUBROUTINE = "\x20\x9";
-const string FLOW_JUMP = "\x20\xA";
-const string FLOW_ZJUMP = "\x9\x20"; // jump if top of the stack is zero
-const string FLOW_NJUMP = "\x9\x9"; // negative jump
-const string FLOW_RETURN = "\x9\xA";
-const string FLOW_ENDPROGRAM = "\xA\xA";
+const std::string FLOW_MARK = "\x20\x20";
+const std::string FLOW_CALL_SUBROUTINE = "\x20\x9";
+const std::string FLOW_JUMP = "\x20\xA";
+const std::string FLOW_ZJUMP = "\x9\x20"; // jump if top of the stack is zero
+const std::string FLOW_NJUMP = "\x9\x9"; // negative jump
+const std::string FLOW_RETURN = "\x9\xA";
+const std::string FLOW_ENDPROGRAM = "\xA\xA";
 
 // IO
-const string IO_OUTPUT_CHAR = "\x20\x20";
-const string IO_OUTPUT_NUMBER = "\x20\x9";
-const string IO_READ_CHAR = "\x9\x20";
-const string IO_READ_NUMBER = "\x9\x9";
+const std::string IO_OUTPUT_CHAR = "\x20\x20";
+const std::string IO_OUTPUT_NUMBER = "\x20\x9";
+const std::string IO_READ_CHAR = "\x9\x20";
+const std::string IO_READ_NUMBER = "\x9\x9";
 
 inline bool is_valid_ws(char cn){ return cn == '\x20' || cn == '\xA' || cn == '\x9'; }
 
@@ -55,24 +53,24 @@ struct command
   command_execution exec;
   int parameter_count;
   command() {}
-  command(command_execution e, int p, const string &dename) : exec(e), parameter_count(p),
+  command(command_execution e, int p, const std::string &dename) : exec(e), parameter_count(p),
       dname(dename) {}
-    
-   const string &get_debug_name() { return dname; }
+
+   const std::string &get_debug_name() { return dname; }
   private:
-    string dname;
+    std::string dname;
 };
 
 
-typedef map<string, command> instruction_set;
-typedef map<string, instruction_set> imp_set;
-typedef map<string, int> namesp;
+typedef std::map<std::string, command> instruction_set;
+typedef std::map<std::string, instruction_set> imp_set;
+typedef std::map<std::string, int> namesp;
 typedef long long int WHSPARAM;
 
 struct parameter
 {
-  string raw; 
-  WHSPARAM val; 
+  std::string raw;
+  WHSPARAM val;
 };
 
 struct token
@@ -80,12 +78,12 @@ struct token
   instruction_set *iset;
 
   command *exec;
-  vector<parameter> parameters;
+  std::vector<parameter> parameters;
 };
 
 
-vector<WHSPARAM> stack;
-map<int,  WHSPARAM> heap;
+std::vector<WHSPARAM> stack;
+std::map<int, WHSPARAM> heap;
 
 
 int stack_push(void *info)
@@ -143,8 +141,8 @@ int stack_erase(void *w)
 int* deliver()
 {
   static int w[2];
-  w[1] = stack[stack.size() - 1]; 
-  w[0] =  stack[stack.size() - 2];
+  w[1] = stack[stack.size() - 1];
+  w[0] = stack[stack.size() - 2];
   stack.pop_back();
   stack.pop_back();
   return w;
@@ -160,7 +158,7 @@ int arithmetic_sub(void *)
 {
   if(stack.size() < 2) return 0;
   int *n = deliver();
-  stack.push_back(n[0]  - n[1]);
+  stack.push_back(n[0] - n[1]);
   return 1;
 }
 int arithmetic_multiplication(void *)
@@ -212,21 +210,21 @@ int dummy(void *)
 int io_output_char(void *)
 {
   WHSPARAM a = stack.back();
-  cout << (char)a;
+  std::cout << (char)a;
   stack.pop_back();
   return 1;
 }
 int io_output_number(void *)
 {
   WHSPARAM a = stack.back();
-  cout << a;
+  std::cout << a;
   stack.pop_back();
   return 1;
 }
 int io_read_char(void *)
 {
   char c;
-  cin.get(c);
+  std::cin.get(c);
   heap[stack.back()] = c;
   stack.pop_back();
   return 1;
@@ -234,32 +232,32 @@ int io_read_char(void *)
 int io_read_number(void *)
 {
   WHSPARAM numb;
-  cin >> numb;
+  std::cin >> numb;
   heap[stack.back()] = numb;
   stack.pop_back();
   return 1;
 }
 
 template<class rtype, class wtype>
-rtype *detect(ifstream &data, wtype &f)
+rtype *detect(std::ifstream &data, wtype &f)
 {
-  string tf;
+  std::string tf;
   while(!data.eof())
   {
     char c;
     data.read(&c, 1);
     if(!is_valid_ws(c)) continue;
     tf += c;
-    
-   typename wtype::iterator wfs = f.find(tf);
-   if(wfs != f.end()) 
-     return &wfs->second;
+
+    typename wtype::iterator wfs = f.find(tf);
+    if(wfs != f.end())
+      return &wfs->second;
   }
   return 0;
 }
-string read_parameter(ifstream &data)
+std::string read_parameter(std::ifstream &data)
 {
-  string fg;
+  std::string fg;
   while(!data.eof())
   {
     char c;
@@ -272,40 +270,40 @@ string read_parameter(ifstream &data)
   }
   return fg;
 }
-WHSPARAM generate_value(const string &fstr)
+WHSPARAM generate_value(const std::string &fstr)
 {
   WHSPARAM val = 0;
   for(int j = 0; j < fstr.length(); j++)
     val |= fstr[fstr.length() - j - 1] == '1' ? (1 << j) : 0;
-  
+
   if(fstr[0] == '1') val = ~val + 1;
   return val;
 }
 
-int jump(const namesp &space, string where)
+int jump(const namesp &space, std::string where)
 {
   namesp::const_iterator kc = space.find(where);
   if(kc == space.end())
   {
-    cout << "Jump to unknown space.";
+    std::cout << "Jump to unknown space.";
     return -1;
   }
   return kc->second;
 }
 
-typedef instruction_set *(*deimp)(ifstream &, imp_set &);
-typedef command *(*decom)(ifstream &, instruction_set &);
+typedef instruction_set *(*deimp)(std::ifstream &, imp_set &);
+typedef command *(*decom)(std::ifstream &, instruction_set &);
 
 deimp detect_imp = detect<instruction_set, imp_set>;
 decom detect_command = detect<command, instruction_set>;
 
-void run_code(const vector<token> &code, const namesp &space)
+void run_code(const std::vector<token> &code, const namesp &space)
 {
   int current_instruction = 0;
   bool running = true;
-  vector<int> function_stack;
-  
-  static vector<string> fcj; 
+  std::vector<int> function_stack;
+
+  static std::vector<std::string> fcj;
   fcj.push_back("flow_zjump(label)");
   fcj.push_back("flow_njump(label)");
 
@@ -314,7 +312,7 @@ void run_code(const vector<token> &code, const namesp &space)
     token w = code[current_instruction];
     if(w.exec->get_debug_name() == "flow_endprogram()")
     {
-      cout << "Finished executing script.";
+      std::cout << "Finished executing script.";
       running = false;
       break;
     }
@@ -328,10 +326,10 @@ void run_code(const vector<token> &code, const namesp &space)
         int stack_last;
         stack_last = stack.back();
         stack.pop_back();
-      
+
       if(w.exec->get_debug_name() == "flow_zjump(label)" )
         if(stack_last == 0)
-          if((current_instruction = jump(space, w.parameters[0].raw)) < 0) 
+          if((current_instruction = jump(space, w.parameters[0].raw)) < 0)
             return;
 
       if(w.exec->get_debug_name() == "flow_njump(label)")
@@ -339,14 +337,14 @@ void run_code(const vector<token> &code, const namesp &space)
           if((current_instruction = jump(space, w.parameters[0].raw)) < 0)
             return;
     }
-    
+
     if(w.exec->get_debug_name() == "flow_call_subroutine(label)")
     {
       function_stack.push_back(current_instruction + 1);
       current_instruction = jump(space, w.parameters[0].raw);
       if(current_instruction < 0) return;
     }
-    
+
     if(w.exec->get_debug_name() == "flow_return()")
     {
       int where = function_stack.back();
@@ -354,7 +352,7 @@ void run_code(const vector<token> &code, const namesp &space)
       current_instruction = where;
       continue;
     }
-    
+
     void *k = (w.parameters.empty() ? 0 : (void *)&w.parameters[0].val);
     w.exec->exec(k);
     current_instruction += 1;
@@ -365,36 +363,36 @@ int main(int argc, char *argv[])
 {
   if(argc < 2)
   {
-    cout << "Usage: <filename>";
+    std::cout << "Usage: <filename>";
     return 1;
   }
-  
-  ifstream data(argv[1]);
+
+  std::ifstream data(argv[1]);
   if(data.fail())
   {
-    cout << "Error while trying to read file " << argv[1] << endl;
+    std::cout << "Error while trying to read file " << argv[1] << std::endl;
     return 2;
   }
-  
+
    instruction_set stack_set;
    stack_set[STACK_PUSH] = command(stack_push, 1, "stack_push(value)");
    stack_set[STACK_COPY] = command(stack_copy, 1, "stack_copy(value)");
    stack_set[STACK_SWAP] = command(stack_swap, 0, "stack_swap()");
    stack_set[STACK_DUPLICATE] = command(stack_duplicate, 0, "stack_duplicate()");
-   stack_set[STACK_POP]   = command(stack_pop, 0, "stack_pop()");
+   stack_set[STACK_POP] = command(stack_pop, 0, "stack_pop()");
    stack_set[STACK_REMOVE] = command(stack_erase, 1, "stack_remove(value)");
-  
+
   instruction_set arithmetic_set;
-  arithmetic_set[ARITHMETIC_ADD]  = command(arithmetic_add, 0, "arithmetic_add()");
+  arithmetic_set[ARITHMETIC_ADD] = command(arithmetic_add, 0, "arithmetic_add()");
   arithmetic_set[ARITHMETIC_SUB] = command(arithmetic_sub, 0, "arithmetic_sub()");
   arithmetic_set[ARITHMETIC_MULTIPLICATION] = command(arithmetic_multiplication, 0, "arithmetic_multiplication()");
   arithmetic_set[ARITHMETIC_DIVISION] = command(arithmetic_division, 0, "arithmetic_division()");
   arithmetic_set[ARITHMETIC_MODULO] = command(arithmetic_modulo, 0, "arithmetic_modulo()");
-  
+
   instruction_set heap_set;
-  heap_set[HEAP_STORE]     = command(heap_store, 0, "heap_store(where, value)");
-  heap_set[HEAP_RETRIEVE] =  command(heap_retrieve, 0, "heap_retrieve(from)");
-  
+  heap_set[HEAP_STORE] = command(heap_store, 0, "heap_store(where, value)");
+  heap_set[HEAP_RETRIEVE] = command(heap_retrieve, 0, "heap_retrieve(from)");
+
   instruction_set flow_set;
   flow_set[FLOW_MARK] = command(dummy, 1, "flow_mark(label)");
   flow_set[FLOW_CALL_SUBROUTINE] = command(dummy, 1, "flow_call_subroutine(label)");
@@ -403,7 +401,7 @@ int main(int argc, char *argv[])
   flow_set[FLOW_NJUMP] = command(dummy, 1, "flow_njump(label)");
   flow_set[FLOW_RETURN] = command(dummy, 0, "flow_return()");
   flow_set[FLOW_ENDPROGRAM] = command(dummy, 0, "flow_endprogram()");
-  
+
   instruction_set io_set;
   io_set[IO_OUTPUT_CHAR] = command(io_output_char, 0, "io_output_char()");
   io_set[IO_OUTPUT_NUMBER] = command(io_output_number, 0, "io_output_number()");
@@ -411,14 +409,14 @@ int main(int argc, char *argv[])
   io_set[IO_READ_NUMBER] = command(io_read_number, 0, "io_read_number");
 
   imp_set is;
-  is[IMP_STACK]       = stack_set; 
+  is[IMP_STACK] = stack_set;
   is[IMP_ARITHMETIC] = arithmetic_set;
-  is[IMP_HEAP]         = heap_set;
-  is[IMP_FLOWC]       = flow_set;
-  is[IMP_IO]             = io_set;
-  
-  
-  vector<token> code;
+  is[IMP_HEAP] = heap_set;
+  is[IMP_FLOWC] = flow_set;
+  is[IMP_IO] = io_set;
+
+
+  std::vector<token> code;
   namesp global_namespace;
 
  bool syntax_valid = true;
@@ -432,28 +430,28 @@ int main(int argc, char *argv[])
       data.get(cn);
       continue;
     }
-    
+
     token cur_token;
     instruction_set *w = detect_imp(data, is);
     if(!w)
     {
-      cout << "Error while detecting imp type. exiting!";
+      std::cout << "Error while detecting imp type. exiting!";
       syntax_valid = false;
       break;
     }
-    
+
     command *wm = detect_command(data, *w);
     if(!wm)
     {
-      cout << "Command not recognized from this specified instruction set.";
+      std::cout << "Command not recognized from this specified instruction set.";
       syntax_valid = false;
       break;
     }
-    
+
     cur_token.iset = w;
     cur_token.exec = wm;
-    
-    string param;
+
+    std::string param;
     for(int i = 0; i < wm->parameter_count; i++)
     {
       parameter p;
@@ -469,7 +467,7 @@ int main(int argc, char *argv[])
     instruction_index++;
   }
 
-  if(syntax_valid) 
+  if(syntax_valid)
     run_code(code, global_namespace);
   data.close();
   return 0;

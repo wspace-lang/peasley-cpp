@@ -2,7 +2,7 @@
 
 by Peasley
 
-Posted [5 Feb 2010 08:24:04 UTC](http://www.rohitab.com/discuss/topic/35639-c-whitespace-interpreter/?p=10074137)
+Posted [2010-02-05 08:24:04 +0000](http://www.rohitab.com/discuss/topic/35639-c-whitespace-interpreter/?p=10074137)
 
 here is my code too, in C++.
 
